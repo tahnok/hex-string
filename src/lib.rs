@@ -10,6 +10,7 @@ use std::result;
 
 /// HexString provides a structured representation of a hex string. It is guaranteed to be a valid
 /// string, whether initialized from a string or from a byte vector.
+#[derive(Clone, Debug, PartialEq)]
 pub struct HexString(String);
 
 #[derive(Debug)]
