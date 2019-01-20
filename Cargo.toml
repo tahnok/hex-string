@@ -2,5 +2,12 @@
 name = "hex-string"
 version = "0.1.0"
 authors = ["Savanni D'Gerinel <savanni@luminescent-dreams.com>"]
+description = "a data structure for managing hex strings in both string and byte vector representation"
+license = "BSD-3-Clause"
+license-file = "LICENSE"
+documentation = "https://docs.rs/hex-string"
+homepage = "https://github.com/luminescent-dreams/hex-string"
+repository = "https://github.com/luminescent-dreams/hex-string"
+categories = ["data-structures"]
 
 [dependencies]
