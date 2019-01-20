@@ -42,7 +42,7 @@ jobs:
 
     steps:
     - checkout
-    - run: nix-build ./Cargo.nix -A hex-string
+    - run: nix-build ./Cargo.nix -A hex_string
 
 workflows:
   version: 2
