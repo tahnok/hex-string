@@ -1,0 +1,6 @@
+[package]
+name = "hex-string"
+version = "0.1.0"
+authors = ["Savanni D'Gerinel <savanni@luminescent-dreams.com>"]
+
+[dependencies]
