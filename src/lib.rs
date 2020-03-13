@@ -7,6 +7,7 @@
 
 use std::collections::{ HashSet };
 use std::result;
+use std::str::FromStr;
 
 /// HexString provides a structured representation of a hex string. It is guaranteed to be a valid
 /// string, whether initialized from a string or from a byte vector.
@@ -170,6 +171,16 @@ impl HexString {
     }
 }
 
+/// Implementing the FromStr trait will let it be combined better with other crates
+/// It refers the implementation to the existing `from_string` function.
+impl FromStr for HexString {
+    type Err = HexStringError;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        Self::from_string(s)
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -198,5 +209,17 @@ mod tests {
             Err(_err) => (),
             Ok(_) => panic!("did not reject a 'g' in the string"),
         }
+    }
+
+    #[test]
+    fn it_can_be_parsed_using_the_parse_function() {
+        let _hex_s = string_repr().parse::<HexString>()
+            .expect("string_repr example should be parsable");
+    }
+
+    #[test]
+    fn it_can_fail_for_uneven_length_strings_using_the_parse_function() {
+        let hex_s = "abb".parse::<HexString>();
+        assert!(hex_s.is_err())
     }
 }
