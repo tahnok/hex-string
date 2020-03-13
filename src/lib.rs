@@ -150,6 +150,11 @@ impl HexString {
         self.0.clone()
     }
 
+    /// Return a &str slice
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
+
     /// Return a byte representation
     pub fn as_bytes(&self) -> Vec<u8> {
         let mut i = self.0.chars();
@@ -193,6 +198,12 @@ mod tests {
     fn it_converts_bytes_to_string() {
         let res = HexString::from_bytes(&byte_repr());
         assert_eq!(*res.as_string(), string_repr());
+    }
+
+    #[test]
+    fn it_converts_bytes_to_str_slice() {
+        let res = HexString::from_bytes(&byte_repr());
+        assert_eq!(res.as_str(), string_repr());
     }
 
     #[test]
