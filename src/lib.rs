@@ -14,18 +14,21 @@ use std::str::FromStr;
 #[derive(Clone, Debug, PartialEq)]
 pub struct HexString(String);
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum HexStringError {
     /// There was an invalid character in the hex string
+    #[error("Encountered invalid character: '{0}'")]
     InvalidCharacter(char),
 
     /// All hex strings must be an even length in order to represent bytes because each two
     /// characters represents one byte
+    #[error("String length was odd, but it must be even")]
     InvalidStringLength,
 
     /// Somehow the conversion function tried to convert a value outside the range of 0-15
     /// (inclusive) into a hex value. This should only be raised from a direct call to
     /// `nibble_to_hexchar`, or in the case of a bug in this module.
+    #[error("Weird error, tried to convert nible outside of 0-15(inclusive), byte value '{0}'")]
     InvalidNibble(u8),
 }
 

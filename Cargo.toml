@@ -11,3 +11,4 @@ repository = "https://github.com/luminescent-dreams/hex-string"
 categories = ["data-structures"]
 
 [dependencies]
+thiserror = "1.0.12"
