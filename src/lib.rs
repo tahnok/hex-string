@@ -7,24 +7,28 @@
 
 use std::collections::{ HashSet };
 use std::result;
+use std::str::FromStr;
 
 /// HexString provides a structured representation of a hex string. It is guaranteed to be a valid
 /// string, whether initialized from a string or from a byte vector.
 #[derive(Clone, Debug, PartialEq)]
 pub struct HexString(String);
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum HexStringError {
     /// There was an invalid character in the hex string
+    #[error("Encountered invalid character: '{0}'")]
     InvalidCharacter(char),
 
     /// All hex strings must be an even length in order to represent bytes because each two
     /// characters represents one byte
+    #[error("String length was odd, but it must be even")]
     InvalidStringLength,
 
     /// Somehow the conversion function tried to convert a value outside the range of 0-15
     /// (inclusive) into a hex value. This should only be raised from a direct call to
     /// `nibble_to_hexchar`, or in the case of a bug in this module.
+    #[error("Weird error, tried to convert nible outside of 0-15(inclusive), byte value '{0}'")]
     InvalidNibble(u8),
 }
 
@@ -136,7 +140,7 @@ impl HexString {
     }
 
     /// Initialize a hex strign from a binary vector. This function cannot fail.
-    pub fn from_bytes(v: &Vec<u8>) -> HexString {
+    pub fn from_bytes(v: &[u8]) -> HexString {
         HexString(v.iter().map(|b| u8_to_hex_string(b)).fold(String::new(), |mut acc, s| {
             acc.push(s[0]);
             acc.push(s[1]);
@@ -147,6 +151,11 @@ impl HexString {
     /// Return a String representation
     pub fn as_string(&self) -> String {
         self.0.clone()
+    }
+
+    /// Return a &str slice
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
     }
 
     /// Return a byte representation
@@ -170,6 +179,16 @@ impl HexString {
     }
 }
 
+/// Implementing the FromStr trait will let it be combined better with other crates
+/// It refers the implementation to the existing `from_string` function.
+impl FromStr for HexString {
+    type Err = HexStringError;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        Self::from_string(s)
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -182,6 +201,12 @@ mod tests {
     fn it_converts_bytes_to_string() {
         let res = HexString::from_bytes(&byte_repr());
         assert_eq!(*res.as_string(), string_repr());
+    }
+
+    #[test]
+    fn it_converts_bytes_to_str_slice() {
+        let res = HexString::from_bytes(&byte_repr());
+        assert_eq!(res.as_str(), string_repr());
     }
 
     #[test]
@@ -198,5 +223,17 @@ mod tests {
             Err(_err) => (),
             Ok(_) => panic!("did not reject a 'g' in the string"),
         }
+    }
+
+    #[test]
+    fn it_can_be_parsed_using_the_parse_function() {
+        let _hex_s = string_repr().parse::<HexString>()
+            .expect("string_repr example should be parsable");
+    }
+
+    #[test]
+    fn it_can_fail_for_uneven_length_strings_using_the_parse_function() {
+        let hex_s = "abb".parse::<HexString>();
+        assert!(hex_s.is_err())
     }
 }
