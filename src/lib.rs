@@ -139,7 +139,7 @@ impl HexString {
         Ok(HexString(String::from(s)))
     }
 
-    /// Initialize a hex strign from a binary vector. This function cannot fail.
+    /// Initialize a hex string from a binary vector. This function cannot fail.
     pub fn from_bytes(v: &[u8]) -> HexString {
         HexString(v.iter().map(|b| u8_to_hex_string(b)).fold(String::new(), |mut acc, s| {
             acc.push(s[0]);
